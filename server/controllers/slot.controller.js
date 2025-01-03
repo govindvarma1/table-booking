@@ -1,4 +1,5 @@
 import Booking from "../models/slot.model.js";
+import moment from 'moment';
 
 export const bookSlot = async (req, res, next) => {
 	try {
@@ -159,11 +160,40 @@ export const getAvailableSlots = async (req, res, next) => {
 	}
 };
 
-export const getAllBookings = async(req, res, next) => {
-	try {
-		const allBookings = await Booking.find();
-		return res.status(200).send({bookings: allBookings});
-	} catch (error) {
-		next(error);
-	}
-}
+export const getAllBookings = async (req, res, next) => {
+    try {
+        // Fetch all bookings from the database
+        const allBookings = await Booking.find();
+
+        // Get the current date and time
+        const currentDateTime = moment(); // current date and time
+		console.log(currentDateTime)
+        const pastSlots = [];
+        const upcomingSlots = [];
+
+        // Process each booking to categorize it
+        allBookings.forEach(booking => {
+			const bookingDate = moment(booking.date);
+            const bookingTime = moment(`${booking.slot}`, 'hh:mm A');
+
+			const combinedBookingDateTime = bookingDate.set({
+                'hour': bookingTime.hour(),
+                'minute': bookingTime.minute(),
+                'second': 0,
+                'millisecond': 0
+            });
+            if (combinedBookingDateTime.isBefore(currentDateTime)) {
+                pastSlots.push(booking);
+            } else {
+                upcomingSlots.push(booking);
+            }
+        });
+
+        return res.status(200).send({
+            pastSlots,
+            upcomingSlots
+        });
+    } catch (error) {
+        next(error);
+    }
+};
