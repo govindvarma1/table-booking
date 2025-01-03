@@ -3,7 +3,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 export default function BookingsSkeleton() {
 	return (
-		<div className="px-16 py-4">
+		<div className="px-16 py-2 max-[450px]:px-4">
 			{/* Skeleton for Heading */}
 			<Skeleton height={25} width="15%" className="mb-4" />
 

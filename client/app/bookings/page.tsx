@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { getBookings } from "./_actions/actions";
-import moment from "moment"; 
+import moment from "moment";
 import BookingList from "./_components/bookingList";
 import BookingsSkeleton from "./loading";
+import Navbar from "../_components/navbar";
 
 export default function BookingsPage() {
 	const [loading, setLoading] = useState<boolean>(true);
@@ -43,10 +44,11 @@ export default function BookingsPage() {
 
 	return (
 		<>
+			<Navbar />
 			{loading ? (
 				<BookingsSkeleton />
 			) : (
-				<section className="px-16 py-4">
+				<section className="px-16 py-2 max-[450px]:px-4">
 					<h2 className="text-2xl font-bold mb-4">Bookings</h2>
 
 					{/* Tabs for switching */}
