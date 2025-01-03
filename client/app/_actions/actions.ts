@@ -1,5 +1,4 @@
 "use server";
-
 import { slotDetails } from "@/utils/type";
 
 const API_URL = "https://table-booking-53zw.onrender.com"
