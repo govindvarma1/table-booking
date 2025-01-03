@@ -139,7 +139,7 @@ const BookingForm = () => {
 	};
 
 	return (
-		<section className="px-16 py-4">
+		<section>
 			<Navbar />
 			<div className="w-full flex justify-center">
 				<div>
