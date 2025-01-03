@@ -2,6 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,6 +11,8 @@
   "description": "",
   "dependencies": {
     "dotenv": "^16.4.7",
-    "expressjs": "^1.0.1"
+    "express": "^4.21.2",
+    "expressjs": "^1.0.1",
+    "mongoose": "^8.9.3"
   }
 }
