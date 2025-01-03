@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { getBookings } from "./_actions/actions";
-import moment from "moment";
 import BookingList from "./_components/bookingList";
 import BookingsSkeleton from "./loading";
 import Navbar from "../_components/navbar";
@@ -51,7 +50,6 @@ export default function BookingsPage() {
 				<section className="px-16 py-2 max-[450px]:px-4">
 					<h2 className="text-2xl font-bold mb-4">Bookings</h2>
 
-					{/* Tabs for switching */}
 					<div className="flex gap-6 mb-4">
 						<button
 							onClick={() => handleTabSwitch("upcoming")}
@@ -71,12 +69,11 @@ export default function BookingsPage() {
 						</button>
 					</div>
 
-					{/* Booking content based on active tab */}
 					{activeTab === "upcoming" && (
 						<div>
 							<h3 className="text-xl font-semibold">Upcoming Bookings</h3>
 							<BookingList
-								bookings={upcomingBookings} // Pass upcoming bookings data
+								bookings={upcomingBookings}
 								type="Upcoming"
 								onDeleteBooking={handleDeleteBooking}
 							/>
@@ -87,7 +84,7 @@ export default function BookingsPage() {
 						<div className="mt-8">
 							<h3 className="text-xl font-semibold">Past Bookings</h3>
 							<BookingList
-								bookings={pastBookings} // Pass past bookings data
+								bookings={pastBookings}
 								type="Past"
 								onDeleteBooking={handleDeleteBooking}
 							/>

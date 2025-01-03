@@ -8,7 +8,6 @@ export default function Navbar() {
 		<nav className="w-full px-6 py-4 shadow-md bg-blue-500 min-w-[350px] mb-4">
 			<div className="flex items-center justify-between">
 				<h1 className="font-bold text-xl text-white">Table Booking</h1>
-				{/* Hamburger Menu Button */}
 				<button
 					className="md:hidden text-white focus:outline-none"
 					onClick={() => setIsOpen(!isOpen)}
@@ -37,7 +36,6 @@ export default function Navbar() {
 						)}
 					</svg>
 				</button>
-				{/* Links for larger screens */}
 				<div className="hidden md:flex gap-4">
 					<Link href="/" className="font-semibold text-white">
 						Create Booking
@@ -47,7 +45,6 @@ export default function Navbar() {
 					</Link>
 				</div>
 			</div>
-			{/* Links for smaller screens */}
 			{isOpen && (
 				<div className="flex flex-col mt-2 space-y-2 md:hidden">
 					<Link

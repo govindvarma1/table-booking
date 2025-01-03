@@ -4,16 +4,13 @@ import "react-loading-skeleton/dist/skeleton.css";
 export default function BookingsSkeleton() {
 	return (
 		<div className="px-16 py-2 max-[450px]:px-4">
-			{/* Skeleton for Heading */}
 			<Skeleton height={25} width="15%" className="mb-4" />
 
-			{/* Skeleton for Tabs */}
 			<div className="flex gap-4 mb-4">
 				<Skeleton height={20} width={80} />
 				<Skeleton height={20} width={80} />
 			</div>
 
-			{/* Skeleton for Booking List */}
 			<div>
 				<h3 className="text-xl font-semibold mb-2">
 					<Skeleton width={100} />

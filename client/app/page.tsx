@@ -5,11 +5,11 @@ import Calendar, { CalendarProps } from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import Navbar from "./_components/navbar";
 import { bookSlot, refreshSlots } from "./_actions/actions";
-import { FormDataType } from "@/utils/type";
+import { bookingDetails, FormDataType } from "@/utils/type";
 import { LoaderCircle } from "lucide-react";
 import toast from "react-hot-toast";
+import ConfirmationModal from "./_components/conformationModel";
 
-// Utility function to format a date
 const formatDate = (date: Date): string => {
 	return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
 		2,
@@ -17,7 +17,6 @@ const formatDate = (date: Date): string => {
 	)}-${String(date.getDate()).padStart(2, "0")}`;
 };
 
-// Utility function to validate inputs
 const validateInput = (name: string, value: string): string => {
 	switch (name) {
 		case "name":
@@ -39,7 +38,9 @@ const BookingForm = () => {
 	const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 	const [availableSlots, setAvailableSlots] = useState<string[]>([]);
 	const [isBooking, setIsBooking] = useState<boolean>(false);
+	const [bookingDetails, setBookingDetails] = useState<bookingDetails | null>(null);
 	const [isSlotsLoading, setIsSlotsLoading] = useState<boolean>(true);
+	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [formData, setFormData] = useState<FormDataType>({
 		name: "",
 		phone: "",
@@ -48,7 +49,6 @@ const BookingForm = () => {
 	});
 	const [errors, setErrors] = useState<Record<string, string>>({});
 
-	// Fetch slots when the selected date changes
 	useEffect(() => {
 		const fetchSlots = async () => {
 			try {
@@ -56,7 +56,7 @@ const BookingForm = () => {
 				const formattedDate = formatDate(selectedDate);
 				const newSlots = await refreshSlots(formattedDate);
 				setAvailableSlots(newSlots);
-				setFormData((prev) => ({...prev, slot: ""}));
+				setFormData((prev) => ({ ...prev, slot: "" }));
 			} catch (error) {
 				console.error("Error fetching slots:", error);
 			} finally {
@@ -66,7 +66,6 @@ const BookingForm = () => {
 		fetchSlots();
 	}, [selectedDate]);
 
-	// Handle input changes
 	const handleChange = (
 		event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
 	) => {
@@ -75,7 +74,6 @@ const BookingForm = () => {
 		setErrors((prev) => ({ ...prev, [name]: validateInput(name, value) }));
 	};
 
-	// Handle date change
 	const handleDateChange: CalendarProps["onChange"] = (value) => {
 		if (value instanceof Date) {
 			const today = new Date();
@@ -94,7 +92,6 @@ const BookingForm = () => {
 		}
 	};
 
-	// Validate all inputs before submission
 	const validateForm = (): boolean => {
 		const newErrors: Record<string, string> = {};
 		Object.entries(formData).forEach(([key, value]) => {
@@ -107,7 +104,6 @@ const BookingForm = () => {
 		return Object.values(newErrors).every((error) => !error);
 	};
 
-	// Handle form submission
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
 		if (validateForm()) {
@@ -115,7 +111,7 @@ const BookingForm = () => {
 			try {
 				const formattedDate = formatDate(selectedDate);
 				const response = await bookSlot({ ...formData, date: formattedDate });
-				const {body, status} = response;
+				const { body, status } = response;
 				if (status !== 201) {
 					toast.error(body.message);
 					return;
@@ -128,6 +124,8 @@ const BookingForm = () => {
 						slot: "",
 					});
 					setSelectedDate(new Date());
+					setBookingDetails(body.newBooking);
+					setIsModalOpen(true);
 				}
 			} catch (error) {
 				console.error("Error booking slot:", error);
@@ -138,6 +136,10 @@ const BookingForm = () => {
 		}
 	};
 
+	const closeModal = () => {
+		setIsModalOpen(false);
+	};
+
 	return (
 		<section>
 			<Navbar />
@@ -145,7 +147,6 @@ const BookingForm = () => {
 				<div>
 					<h2 className="text-2xl font-bold mb-4">Book a Table</h2>
 					<form onSubmit={handleSubmit} className="max-w-[350px]">
-						{/* Name Input */}
 						<InputField
 							label="Name"
 							name="name"
@@ -155,7 +156,6 @@ const BookingForm = () => {
 							onChange={handleChange}
 						/>
 
-						{/* Phone Number Input */}
 						<InputField
 							label="Phone Number"
 							name="phone"
@@ -165,7 +165,6 @@ const BookingForm = () => {
 							onChange={handleChange}
 						/>
 
-						{/* Guests Input */}
 						<InputField
 							label="Number of Guests"
 							name="guests"
@@ -177,7 +176,6 @@ const BookingForm = () => {
 							max="20"
 						/>
 
-						{/* Date Picker */}
 						<div className="mb-4">
 							<label className="block text-sm font-medium">Select Date</label>
 							<Calendar
@@ -190,7 +188,6 @@ const BookingForm = () => {
 							)}
 						</div>
 
-						{/* Slot Selector */}
 						<div className="mb-4">
 							<h3 className="font-medium text-sm">Available Slots:</h3>
 							<div className="mt-2">
@@ -207,7 +204,11 @@ const BookingForm = () => {
 											Select a slot
 										</option>
 										{availableSlots.map((slot) => (
-											<option key={slot} value={slot} className="cursor-pointer">
+											<option
+												key={slot}
+												value={slot}
+												className="cursor-pointer"
+											>
 												{slot}
 											</option>
 										))}
@@ -236,11 +237,15 @@ const BookingForm = () => {
 					</form>
 				</div>
 			</div>
+			<ConfirmationModal
+				isOpen={isModalOpen}
+				bookingDetails={bookingDetails}
+				onClose={closeModal}
+			/>
 		</section>
 	);
 };
 
-// Reusable InputField Component
 const InputField = ({
 	label,
 	name,

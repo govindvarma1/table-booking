@@ -5,6 +5,14 @@ export type FormDataType = {
     slot: string;
 }
 
+export type bookingDetails = {
+    name: string;
+    guests: number;
+    date: string;
+    slot: string;
+    phone: string;
+} 
+
 export type slotDetails = {
     name: string;
     phone: string;
