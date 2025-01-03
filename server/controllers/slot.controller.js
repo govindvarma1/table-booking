@@ -8,17 +8,25 @@ export const bookSlot = async (req, res, next) => {
 			return res.status(400).json({ message: "All fields are required." });
 		}
 
-        const today = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+		const today = new Date(
+			new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+		);
 		const selectedDate = new Date(date);
-        
-		if (selectedDate.getDate() < today.getDate()) {
-            return res
-            .status(400)
-            .json({ message: "You cannot book slots for past dates." });
+
+		if (
+			selectedDate.toISOString().split("T")[0] <
+			today.toISOString().split("T")[0]
+		) {
+			return res
+				.status(400)
+				.json({ message: "You cannot book slots for past dates." });
 		}
-        
-		if (selectedDate.toDateString() === today.toDateString()) {
-            const currentHour = today.getHours();
+
+		if (
+			selectedDate.toISOString().split("T")[0] ===
+			today.toISOString().split("T")[0]
+		) {
+			const currentHour = today.getHours();
 			const currentMinute = today.getMinutes();
 
 			const slotHour = parseInt(slot.split(":")[0], 10);
@@ -32,10 +40,7 @@ export const bookSlot = async (req, res, next) => {
 				? 0
 				: slotHour;
 
-			if (
-				adjustedSlotHour < currentHour ||
-				(adjustedSlotHour === currentHour && currentMinute > 0)
-			) {
+			if (adjustedSlotHour < currentHour) {
 				return res.status(400).json({ message: "You cannot book past slots." });
 			}
 		}
@@ -72,10 +77,15 @@ export const getAvailableSlots = async (req, res, next) => {
 			return res.status(400).json({ message: "Date is required." });
 		}
 
-		const today = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+		const today = new Date(
+			new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+		);
 		const selectedDate = new Date(date);
 
-		if (selectedDate.getDate() < today.getDate()) {
+		if (
+			selectedDate.toISOString().split("T")[0] <
+			today.toISOString().split("T")[0]
+		) {
 			return res
 				.status(400)
 				.json({ message: "You cannot book slots for past dates." });
@@ -97,7 +107,23 @@ export const getAvailableSlots = async (req, res, next) => {
 			"10:00 PM",
 		];
 
-		if (selectedDate.toISOString().split('T')[0] === today.toISOString().split('T')[0]) {
+		const bookingDetails = await Booking.find({ date: selectedDate }).select(
+			"slot"
+		);
+		const bookedSlots = bookingDetails.map((booking) => booking.slot);
+
+		console.log(bookedSlots);
+
+		console.log(
+			`${selectedDate.toISOString().split("T")[0]} ${
+				today.toISOString().split("T")[0]
+			}`
+		);
+
+		if (
+			selectedDate.toISOString().split("T")[0] ===
+			today.toISOString().split("T")[0]
+		) {
 			const currentHour = today.getHours();
 
 			const filteredSlots = availableSlots.filter((slot) => {
@@ -112,9 +138,7 @@ export const getAvailableSlots = async (req, res, next) => {
 					? 0
 					: slotHour;
 
-				return (
-					adjustedSlotHour > currentHour
-				);
+				return adjustedSlotHour > currentHour && !bookedSlots.includes(slot);
 			});
 
 			if (filteredSlots.length === 0) {
@@ -123,10 +147,13 @@ export const getAvailableSlots = async (req, res, next) => {
 					.json({ message: "No available slots for the selected time." });
 			}
 
-			return res.json.status(200)({ availableSlots: filteredSlots });
+			return res.status(200).json({ availableSlots: filteredSlots });
+		} else {
+			const filteredSlots = availableSlots.filter(
+				(slot) => !bookedSlots.includes(slot)
+			);
+			return res.json({ availableSlots: filteredSlots });
 		}
-
-		return res.json({ availableSlots });
 	} catch (error) {
 		next(error);
 	}
