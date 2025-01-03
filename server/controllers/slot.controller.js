@@ -97,7 +97,7 @@ export const getAvailableSlots = async (req, res, next) => {
 			"10:00 PM",
 		];
 
-		if (selectedDate.getDate() === today.getDate()) {
+		if (selectedDate.toISOString().split('T')[0] === today.toISOString().split('T')[0]) {
 			const currentHour = today.getHours();
 
 			const filteredSlots = availableSlots.filter((slot) => {
@@ -123,7 +123,7 @@ export const getAvailableSlots = async (req, res, next) => {
 					.json({ message: "No available slots for the selected time." });
 			}
 
-			return res.json({ availableSlots: filteredSlots });
+			return res.json.status(200)({ availableSlots: filteredSlots });
 		}
 
 		return res.json({ availableSlots });
