@@ -2,9 +2,11 @@ import express from 'express';
 import dotenv from 'dotenv';
 import DBConnect from './config/db.js';
 import slotRouter from "./routes/slot.routes.js"
+import cors from 'cors'
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 dotenv.config();
 
 DBConnect();
