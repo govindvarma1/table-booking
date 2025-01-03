@@ -10,7 +10,21 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...compat.extends("next/core-web-vitals", "next/typescript",),
+  {
+    rules: {
+      // Turn off warnings for unused variables (useful for development)
+      "@typescript-eslint/no-unused-vars": "off",
+
+      // Allow anonymous default exports (useful for quick prototyping)
+      "import/no-anonymous-default-export": "off",
+
+      // Disable the requirement for React display names in function components
+      "react/display-name": "off",
+    },
+  },
 ];
 
 export default eslintConfig;
+
+
