@@ -5,7 +5,7 @@ export default function Navbar() {
 	const [isOpen, setIsOpen] = useState(false);
 
 	return (
-		<nav className="w-full px-4 py-2 bg-blue-500 min-w-[350px] mb-4">
+		<nav className="w-full px-6 py-4 shadow-md bg-blue-500 min-w-[350px] mb-4">
 			<div className="flex items-center justify-between">
 				<h1 className="font-bold text-xl text-white">Table Booking</h1>
 				{/* Hamburger Menu Button */}
