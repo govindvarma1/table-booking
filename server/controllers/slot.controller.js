@@ -158,3 +158,12 @@ export const getAvailableSlots = async (req, res, next) => {
 		next(error);
 	}
 };
+
+export const getAllBookings = async(req, res, next) => {
+	try {
+		const allBookings = await Booking.find();
+		return res.status(200).send({bookings: allBookings});
+	} catch (error) {
+		next(error);
+	}
+}
