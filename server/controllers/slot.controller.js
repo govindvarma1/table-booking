@@ -1,5 +1,5 @@
 import Booking from "../models/slot.model.js";
-import moment from "moment";
+import moment from "moment-timezone";
 
 export const bookSlot = async (req, res, next) => {
 	try {
@@ -163,12 +163,12 @@ export const getAvailableSlots = async (req, res, next) => {
 export const getAllBookings = async (req, res, next) => {
 	try {
 		const allBookings = await Booking.find();
-		const currentDateTime = moment();
+		const currentDateTime = moment().tz('asia/kolkata');
 		console.log(currentDateTime);
 		const pastSlots = [];
 		const upcomingSlots = [];
 		allBookings.forEach((booking) => {
-			const bookingDate = moment(booking.date);
+			const bookingDate = moment(booking.date).tz('asia/kolkata');
 			const bookingTime = moment(`${booking.slot}`, "hh:mm A");
 
 			const combinedBookingDateTime = bookingDate.set({
@@ -177,6 +177,7 @@ export const getAllBookings = async (req, res, next) => {
 				second: 0,
 				millisecond: 0,
 			});
+			console.log(currentDateTime);
 			if (combinedBookingDateTime.isBefore(currentDateTime)) {
 				pastSlots.push(booking);
 			} else {
