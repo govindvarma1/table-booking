@@ -184,6 +184,40 @@ export const getAllBookings = async (req, res, next) => {
 			}
 		});
 
+		upcomingSlots.sort((a, b) => {
+			const aDateTime = moment(a.date).set({
+				hour: moment(`${a.slot}`, "hh:mm A").hour(),
+				minute: moment(`${a.slot}`, "hh:mm A").minute(),
+			});
+			const bDateTime = moment(b.date).set({
+				hour: moment(`${b.slot}`, "hh:mm A").hour(),
+				minute: moment(`${b.slot}`, "hh:mm A").minute(),
+			});
+
+			return aDateTime.isBefore(bDateTime)
+				? -1
+				: aDateTime.isAfter(bDateTime)
+				? 1
+				: 0;
+		});
+
+		pastSlots.sort((a, b) => {
+			const aDateTime = moment(a.date).set({
+				hour: moment(`${a.slot}`, "hh:mm A").hour(),
+				minute: moment(`${a.slot}`, "hh:mm A").minute(),
+			});
+			const bDateTime = moment(b.date).set({
+				hour: moment(`${b.slot}`, "hh:mm A").hour(),
+				minute: moment(`${b.slot}`, "hh:mm A").minute(),
+			});
+
+			return aDateTime.isAfter(bDateTime)
+				? -1
+				: aDateTime.isBefore(bDateTime)
+				? 1
+				: 0;
+		});
+
 		return res.status(200).send({
 			pastSlots,
 			upcomingSlots,

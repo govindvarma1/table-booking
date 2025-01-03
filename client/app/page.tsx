@@ -141,7 +141,7 @@ const BookingForm = () => {
 	return (
 		<section>
 			<Navbar />
-			<div className="w-full flex justify-center">
+			<div className="w-full flex justify-center mb-12">
 				<div>
 					<h2 className="text-2xl font-bold mb-4">Book a Table</h2>
 					<form onSubmit={handleSubmit} className="max-w-[350px]">
@@ -198,7 +198,7 @@ const BookingForm = () => {
 									<p className="text-blue-500">Fetching slots...</p>
 								) : availableSlots.length > 0 ? (
 									<select
-										className="p-2 border rounded bg-gray-100 hover:bg-gray-200 w-full"
+										className="p-2 border rounded bg-gray-100 hover:bg-gray-200 w-full cursor-pointer"
 										name="slot"
 										value={formData.slot}
 										onChange={handleChange}
@@ -207,7 +207,7 @@ const BookingForm = () => {
 											Select a slot
 										</option>
 										{availableSlots.map((slot) => (
-											<option key={slot} value={slot}>
+											<option key={slot} value={slot} className="cursor-pointer">
 												{slot}
 											</option>
 										))}
@@ -220,7 +220,7 @@ const BookingForm = () => {
 
 						<button
 							type="submit"
-							className={`w-full bg-blue-500 text-white p-2 rounded mt-4 ${
+							className={`w-full bg-blue-500 text-white p-2 rounded mt-4 cursor-pointer ${
 								isBooking && "bg-blue-400"
 							}`}
 							disabled={isBooking}
