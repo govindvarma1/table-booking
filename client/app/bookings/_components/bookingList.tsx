@@ -2,7 +2,7 @@ import React from "react";
 import moment from "moment";
 
 interface Booking {
-	id: string;
+	_id: string;
 	name: string;
 	guests: number;
 	date: string;
@@ -25,7 +25,7 @@ const BookingList: React.FC<BookingListProps> = ({
 			{bookings.length > 0 ? (
 				bookings.map((booking) => (
 					<div
-						key={booking.id}
+						key={booking._id}
 						className="p-4 border border-gray-200 rounded-lg"
 					>
 						<div>
@@ -34,12 +34,12 @@ const BookingList: React.FC<BookingListProps> = ({
 						<div>{moment(booking.date).format("MMMM D, YYYY")}</div>
 
 						<div>Slot: {booking.slot}</div>
-						{/* <button
-                            onClick={() => onDeleteBooking(booking.id)}
+						<button
+                            onClick={() => onDeleteBooking(booking._id)}
                             className="text-red-500 mt-2 hover:underline"
                         >
                             Delete
-                        </button> */}
+                        </button>
 					</div>
 				))
 			) : (

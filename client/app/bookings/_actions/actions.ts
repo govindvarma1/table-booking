@@ -7,3 +7,11 @@ export const getBookings = async() => {
     const {pastSlots, upcomingSlots} = await response.json();
     return {pastSlots, upcomingSlots};
 }
+
+export const deleteBooking = async(id: string) => {
+    const response = await fetch(`${API_URL}/deleteSlot?id=${id}`, {
+        method: "DELETE"
+    });
+    const body = await response.json();
+    return {status: response.status, body}
+}

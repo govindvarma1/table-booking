@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getBookings } from "./_actions/actions";
+import { deleteBooking, getBookings } from "./_actions/actions";
 import BookingList from "./_components/bookingList";
 import BookingsSkeleton from "./loading";
 import Navbar from "../_components/navbar";
+import toast from "react-hot-toast";
 
 export default function BookingsPage() {
 	const [loading, setLoading] = useState<boolean>(true);
@@ -30,12 +31,18 @@ export default function BookingsPage() {
 
 	const handleDeleteBooking = async (bookingId: string) => {
 		try {
-			setPastBookings(
-				pastBookings.filter((booking) => booking.id !== bookingId)
-			);
-			setUpcomingBookings(
-				upcomingBookings.filter((booking) => booking.id !== bookingId)
-			);
+			const { status, body } = await deleteBooking(bookingId);
+			if (status === 200) {
+				setPastBookings(
+					pastBookings.filter((booking) => booking._id !== bookingId)
+				);
+				setUpcomingBookings(
+					upcomingBookings.filter((booking) => booking._id !== bookingId)
+				);
+				toast.success("Deleted slot successfully");
+			} else {
+				toast.error(body.message);
+			}
 		} catch (error) {
 			console.error("Error deleting booking:", error);
 		}

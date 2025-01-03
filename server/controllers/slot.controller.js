@@ -163,12 +163,12 @@ export const getAvailableSlots = async (req, res, next) => {
 export const getAllBookings = async (req, res, next) => {
 	try {
 		const allBookings = await Booking.find();
-		const currentDateTime = moment().tz('asia/kolkata');
+		const currentDateTime = moment().tz("asia/kolkata");
 		console.log(currentDateTime);
 		const pastSlots = [];
 		const upcomingSlots = [];
 		allBookings.forEach((booking) => {
-			const bookingDate = moment(booking.date).tz('asia/kolkata');
+			const bookingDate = moment(booking.date).tz("asia/kolkata");
 			const bookingTime = moment(`${booking.slot}`, "hh:mm A");
 
 			const combinedBookingDateTime = bookingDate.set({
@@ -222,6 +222,38 @@ export const getAllBookings = async (req, res, next) => {
 		return res.status(200).send({
 			pastSlots,
 			upcomingSlots,
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const deleteSlot = async (req, res, next) => {
+	try {
+		const { id } = req.query;
+
+		if (!id) {
+			return res.status(400).json({
+				success: false,
+				message: "Booking ID is required",
+			});
+		}
+
+		const booking = await Booking.findById(id);
+
+		if (!booking) {
+			return res.status(404).json({
+				success: false,
+				message: "Booking not found",
+			});
+		}
+
+		await booking.deleteOne({ _id: id });
+
+		return res.status(200).json({
+			success: true,
+			message: "Booking deleted successfully",
+			deletedBooking: booking,
 		});
 	} catch (error) {
 		next(error);
