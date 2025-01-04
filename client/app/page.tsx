@@ -35,7 +35,11 @@ const validateInput = (name: string, value: string): string => {
 };
 
 const BookingForm = () => {
-	const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+	const [selectedDate, setSelectedDate] = useState<Date>(new Date(
+		new Date().getFullYear(),
+		new Date().getMonth(),
+		new Date().getDate()
+	));
 	const [availableSlots, setAvailableSlots] = useState<string[]>([]);
 	const [isBooking, setIsBooking] = useState<boolean>(false);
 	const [bookingDetails, setBookingDetails] = useState<bookingDetails | null>(null);
@@ -78,15 +82,21 @@ const BookingForm = () => {
 		if (value instanceof Date) {
 			const today = new Date();
 			today.setHours(0, 0, 0, 0);
-
-			if (value < today) {
+	
+			const normalizedDate = new Date(
+				value.getFullYear(),
+				value.getMonth(),
+				value.getDate()
+			);
+	
+			if (normalizedDate < today) {
 				setErrors((prev) => ({ ...prev, date: "You cannot book past dates." }));
 				setAvailableSlots([]);
 				return;
 			}
-
+	
 			setErrors((prev) => ({ ...prev, date: "" }));
-			setSelectedDate(value);
+			setSelectedDate(normalizedDate);
 		} else {
 			setErrors((prev) => ({ ...prev, date: "Invalid date selection." }));
 		}
